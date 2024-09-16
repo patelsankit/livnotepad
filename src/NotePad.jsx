@@ -90,7 +90,7 @@ const Notepad = () => {
         <small className="text-gray-200 text-xs font-normal">
           by{" "}
           <a
-            className="cursor-pointer"
+            className="cursor-pointer hover:text-blue-500"
             href="https://in.linkedin.com/in/sankit-parasiya-82970416a"
             target="_blank"
           >
