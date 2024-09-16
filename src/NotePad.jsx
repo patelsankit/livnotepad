@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
-import { IconCheck, IconCopy, IconWashDrycleanOff } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconClipboard,
+  IconCopy,
+  IconLoader,
+  IconWashDrycleanOff,
+} from "@tabler/icons-react";
 import {
   Tooltip,
   TooltipContent,
@@ -13,6 +19,7 @@ const Notepad = () => {
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
   const [textareaCopied, setTextareaCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const copyToClipboard = () => {
     const currentUrl = window.location.href;
@@ -79,6 +86,7 @@ const Notepad = () => {
       if (docSnap.exists()) {
         setText(docSnap.data().text);
       }
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -92,10 +100,19 @@ const Notepad = () => {
     setText("");
     saveText("");
   };
+  const pasteFromClipboard = async () => {
+    try {
+      const clipboardText = await navigator.clipboard.readText(); // Read the text from clipboard
+      setText((prevText) => prevText + clipboardText); // Append clipboard text to textarea
+      saveText(text + clipboardText); // Save updated text to Firestore
+    } catch (err) {
+      console.error("Failed to read clipboard contents:", err);
+    }
+  };
 
   return (
     <div>
-      <h1 className="text-left sm:text-center text-white text-2xl pb-2 font-bold">
+      <h1 className="text-left sm:text-center text-white text-lg sm:text-2xl pb-2 font-bold">
         Live Notepad{" "}
         <small className="text-gray-200 text-xs font-normal">
           by{" "}
@@ -108,33 +125,44 @@ const Notepad = () => {
           </a>{" "}
         </small>
       </h1>
-      {!copied && (
-        <div
-          onClick={copyToClipboard}
-          className="text-gray-500 hover:text-gray-200 absolute text-base right-3 sm:right-5 top-2 sm:top-8 flex items-center gap-1 cursor-pointer"
-        >
-          Copy Notepad URL
-          <IconCopy className=" h-5 w-5 " />
-        </div>
-      )}
-      {copied && (
-        <IconCheck className="h-5 w-5 absolute right-3 sm:right-5 top-2 sm:top-8 text-gray-200 cursor-pointer" />
-      )}
+      <div
+        onClick={copyToClipboard}
+        className="text-gray-500 sm:hover:text-gray-200 absolute text-base left-3 sm:left-5 top-2 sm:top-8 flex items-center gap-1 cursor-pointer"
+      >
+        Copy Notepad URL
+        {!copied && <IconCopy className=" h-5 w-5 " />}
+        {copied && <IconCheck className="h-5 w-5  text-gray-200" />}
+      </div>
       <div className="relative">
+        {loading && (
+          <div
+            className="absolute top-4 left-4 text-blue-500 animate-spin"
+            style={{ animationDuration: "2s" }}
+          >
+            <IconLoader />
+          </div>
+        )}
         <textarea
           value={text}
           onChange={handleTextChange}
-          placeholder="Write your notes here..."
-          className="small-scroll resize-none shadow-2xl p-4 h-[calc(100dvh-100px)] overflow-auto w-full bg-[#18181b] text-white border-gray-500 border-2 border-solid focus-visible:outline-none rounded-xl"
+          placeholder={loading ? "" : "Write your notes here..."}
+          className="small-scroll resize-none shadow-2xl p-2.5 sm:p-4 h-[calc(100dvh-100px)] overflow-auto w-full bg-[#18181b] text-white border-gray-500 border-2 border-solid focus-visible:outline-none rounded-xl"
         />
         <div
-          className="cursor-pointer grid absolute right-12 top-3 text-gray-500 hover:text-gray-200"
+          className="cursor-pointer grid absolute right-[70px] sm:right-[86px] -top-10 text-gray-500 hover:text-gray-200"
+          onClick={pasteFromClipboard}
+        >
+          <IconClipboard className="h-5 w-5  cursor-pointer" />
+          <span className="text-xs">paste</span>
+        </div>
+        <div
+          className="cursor-pointer grid absolute right-10 sm:right-12 -top-10 text-gray-500 hover:text-gray-200"
           onClick={clearText}
         >
           <IconWashDrycleanOff className="h-5 w-5  cursor-pointer" />
           <span className="text-xs">clear</span>
         </div>
-        <div className="absolute right-3 top-3">
+        <div className="absolute right-2 sm:right-3 -top-10">
           {!textareaCopied && (
             <div
               onClick={copyTextareaToClipboard}
@@ -146,7 +174,7 @@ const Notepad = () => {
           )}
           {textareaCopied && (
             <div className="grid min-w-[25px]">
-            <IconCheck className="h-5 w-5 text-gray-200 cursor-pointer" />
+              <IconCheck className="h-5 w-5 text-gray-200 cursor-pointer" />
             </div>
           )}
         </div>
