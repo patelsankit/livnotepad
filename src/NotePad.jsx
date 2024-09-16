@@ -86,7 +86,7 @@ const Notepad = () => {
   return (
     <div>
       <h1 className="text-left sm:text-center text-white text-2xl pb-2 font-bold">
-        Liv Notepad{" "}
+        Live Notepad{" "}
         <small className="text-gray-200 text-xs font-normal">
           by{" "}
           <a
