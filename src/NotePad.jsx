@@ -88,6 +88,10 @@ const Notepad = () => {
     setText(value);
     saveText(value);
   };
+  const clearText = () => {
+    setText("");
+    saveText("");
+  };
 
   return (
     <div>
@@ -110,11 +114,11 @@ const Notepad = () => {
           className="text-gray-500 hover:text-gray-200 absolute text-base right-3 sm:right-5 top-2 sm:top-8 flex items-center gap-1 cursor-pointer"
         >
           Copy Notepad URL
-          <IconCopy className=" h-6 w-6 " />
+          <IconCopy className=" h-5 w-5 " />
         </div>
       )}
       {copied && (
-        <IconCheck className="h-6 w-6 absolute right-3 sm:right-5 top-2 sm:top-8 text-gray-200 cursor-pointer" />
+        <IconCheck className="h-5 w-5 absolute right-3 sm:right-5 top-2 sm:top-8 text-gray-200 cursor-pointer" />
       )}
       <div className="relative">
         <textarea
@@ -124,40 +128,26 @@ const Notepad = () => {
           className="small-scroll resize-none shadow-2xl p-4 h-[calc(100dvh-100px)] overflow-auto w-full bg-[#18181b] text-white border-gray-500 border-2 border-solid focus-visible:outline-none rounded-xl"
         />
         <div
-          className="absolute right-12 top-3"
-          onClick={() => setText("")}
+          className="cursor-pointer grid absolute right-12 top-3 text-gray-500 hover:text-gray-200"
+          onClick={clearText}
         >
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <IconWashDrycleanOff className="h-6 w-6 text-gray-500 hover:text-gray-200 cursor-pointer" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Clear</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <IconWashDrycleanOff className="h-5 w-5  cursor-pointer" />
+          <span className="text-xs">clear</span>
         </div>
         <div className="absolute right-3 top-3">
           {!textareaCopied && (
             <div
               onClick={copyTextareaToClipboard}
-              className="text-gray-500 hover:text-gray-200 flex items-center gap-1 cursor-pointer"
+              className="text-gray-500 hover:text-gray-200 grid cursor-pointer"
             >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <IconCopy className="h-6 w-6" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Copy</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <IconCopy className="h-5 w-5" />
+              <span className="text-xs">copy</span>
             </div>
           )}
           {textareaCopied && (
-            <IconCheck className="h-6 w-6 text-gray-200 cursor-pointer" />
+            <div className="grid min-w-[25px]">
+            <IconCheck className="h-5 w-5 text-gray-200 cursor-pointer" />
+            </div>
           )}
         </div>
       </div>
