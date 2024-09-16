@@ -9,7 +9,6 @@ const Notepad = () => {
   const [copied, setCopied] = useState(false);
   const [textareaCopied, setTextareaCopied] = useState(false);
 
-  // Function to copy URL to clipboard
   const copyToClipboard = () => {
     const currentUrl = window.location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -36,7 +35,6 @@ const Notepad = () => {
     }
   };
 
-  // Function to copy textarea content to clipboard
   const copyTextareaToClipboard = () => {
     navigator.clipboard.writeText(text).then(() => {
       handleTextareaCopySuccess();
