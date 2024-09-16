@@ -1,8 +1,13 @@
-
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
-import { IconCheck, IconCopy } from "@tabler/icons-react";
+import { IconCheck, IconCopy, IconWashDrycleanOff } from "@tabler/icons-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./components/ui/tooltip";
 
 const Notepad = () => {
   const [text, setText] = useState("");
@@ -36,11 +41,14 @@ const Notepad = () => {
   };
 
   const copyTextareaToClipboard = () => {
-    navigator.clipboard.writeText(text).then(() => {
-      handleTextareaCopySuccess();
-    }).catch((err) => {
-      console.error("Failed to copy using Clipboard API:", err);
-    });
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        handleTextareaCopySuccess();
+      })
+      .catch((err) => {
+        console.error("Failed to copy using Clipboard API:", err);
+      });
   };
 
   const handleCopySuccess = () => {
@@ -115,19 +123,42 @@ const Notepad = () => {
           placeholder="Write your notes here..."
           className="small-scroll resize-none shadow-2xl p-4 h-[calc(100dvh-100px)] overflow-auto w-full bg-[#18181b] text-white border-gray-500 border-2 border-solid focus-visible:outline-none rounded-xl"
         />
+        <div
+          className="absolute right-12 top-3"
+          onClick={() => setText("")}
+        >
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <IconWashDrycleanOff className="h-6 w-6 text-gray-500 hover:text-gray-200 cursor-pointer" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Clear</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <div className="absolute right-3 top-3">
-
-        {!textareaCopied && (
-          <div
-          onClick={copyTextareaToClipboard}
-          className="text-gray-500 hover:text-gray-200 flex items-center gap-1 cursor-pointer"
-          >
-            <IconCopy className="h-6 w-6" />
-          </div>
-        )}
-        {textareaCopied && (
-          <IconCheck className="h-6 w-6 text-gray-200 cursor-pointer" />
-        )}
+          {!textareaCopied && (
+            <div
+              onClick={copyTextareaToClipboard}
+              className="text-gray-500 hover:text-gray-200 flex items-center gap-1 cursor-pointer"
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <IconCopy className="h-6 w-6" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Copy</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          )}
+          {textareaCopied && (
+            <IconCheck className="h-6 w-6 text-gray-200 cursor-pointer" />
+          )}
         </div>
       </div>
     </div>
