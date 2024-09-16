@@ -115,7 +115,7 @@ const Notepad = () => {
           value={text}
           onChange={handleTextChange}
           placeholder="Write your notes here..."
-          className="small-scroll resize-none shadow-2xl p-4 h-[calc(100vh-100px)] overflow-auto w-full bg-[#18181b] text-white border-gray-500 border-2 border-solid focus-visible:outline-none rounded-xl"
+          className="small-scroll resize-none shadow-2xl p-4 h-[calc(100dvh-100px)] overflow-auto w-full bg-[#18181b] text-white border-gray-500 border-2 border-solid focus-visible:outline-none rounded-xl"
         />
         <div className="absolute right-3 top-3">
 
