@@ -8,10 +8,14 @@ import {
   IconLoader,
   IconWashDrycleanOff,
 } from "@tabler/icons-react";
-import { useParams } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./components/ui/tooltip";
 
 const Notepad = () => {
-  const { noteId } = useParams();
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
   const [textareaCopied, setTextareaCopied] = useState(false);
@@ -70,26 +74,22 @@ const Notepad = () => {
 
   const saveText = async (value) => {
     try {
-      await setDoc(doc(db, "notepad", noteId), { text: value });
+      await setDoc(doc(db, "notepad", "sharedText"), { text: value });
     } catch (error) {
       console.error("Error saving document:", error);
     }
   };
-  useEffect(() => {
-    setLoading(true);
 
-    const docRef = doc(db, "notepad", noteId);
+  useEffect(() => {
+    const docRef = doc(db, "notepad", "sharedText");
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         setText(docSnap.data().text);
-      } else {
-        setText("");
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
-  }, [noteId]);
+  }, []);
 
   const handleTextChange = (e) => {
     const value = e.target.value;
@@ -102,9 +102,9 @@ const Notepad = () => {
   };
   const pasteFromClipboard = async () => {
     try {
-      const clipboardText = await navigator.clipboard.readText();
-      setText((prevText) => prevText + clipboardText);
-      saveText(text + clipboardText);
+      const clipboardText = await navigator.clipboard.readText(); // Read the text from clipboard
+      setText((prevText) => prevText + clipboardText); // Append clipboard text to textarea
+      saveText(text + clipboardText); // Save updated text to Firestore
     } catch (err) {
       console.error("Failed to read clipboard contents:", err);
     }
@@ -127,13 +127,13 @@ const Notepad = () => {
       </h1>
       <div
         onClick={copyToClipboard}
-        className="z-10 text-gray-500 sm:hover:text-gray-200 absolute text-base left-3 sm:left-5 top-12 sm:top-2 lg:top-8 flex items-center gap-1 cursor-pointer text-sm"
+        className="text-gray-500 sm:hover:text-gray-200 absolute text-base left-3 sm:left-5 top-2 sm:top-8 flex items-center gap-1 cursor-pointer text-sm"
       >
         Copy Notepad URL
         {!copied && <IconCopy className=" h-5 w-5 " />}
         {copied && <IconCheck className="h-5 w-5  text-gray-200" />}
       </div>
-      <div className="relative pt-5 sm:pt-0">
+      <div className="relative">
         {loading && (
           <div
             className="absolute top-4 left-4 text-blue-500 animate-spin"
@@ -149,21 +149,21 @@ const Notepad = () => {
           className="small-scroll resize-none shadow-2xl p-2.5 sm:p-4 h-[calc(100dvh-100px)] overflow-auto w-full bg-[#18181b] text-white border-gray-500 border-2 border-solid focus-visible:outline-none rounded-xl"
         />
         <div
-          className="cursor-pointer grid absolute items-center right-[85px] sm:right-[132px] -top-5 sm:-top-14 justify-center sm:h-[55px] sm:w-[55px] sm:rounded-full sm:p-1 sm:bg-white/10 sm:hover:bg-white/20 shadow-lg text-gray-500 hover:text-gray-200"
+          className="cursor-pointer grid absolute items-center right-[85px] sm:right-[132px] -top-10 sm:-top-14 justify-center sm:h-[55px] sm:w-[55px] sm:rounded-full sm:p-1 sm:bg-white/10 sm:hover:bg-white/20 shadow-lg text-gray-500 hover:text-gray-200"
           onClick={pasteFromClipboard}
         >
           <IconClipboard className="h-5 w-5 sm:w-6 sm:h-6 cursor-pointer mx-auto" />
           <span className="text-xs sm:text-sm text-center">paste</span>
         </div>
         <div
-          className="cursor-pointer grid absolute right-[46px] sm:right-[72px] -top-5 sm:-top-14  items-center justify-center  sm:h-[55px] sm:w-[55px] sm:rounded-full sm:p-1 sm:bg-white/10 sm:hover:bg-white/20 shadow-lg text-gray-500 hover:text-gray-200"
+          className="cursor-pointer grid absolute right-[46px] sm:right-[72px] -top-10 sm:-top-14  items-center justify-center  sm:h-[55px] sm:w-[55px] sm:rounded-full sm:p-1 sm:bg-white/10 sm:hover:bg-white/20 shadow-lg text-gray-500 hover:text-gray-200"
           onClick={clearText}
         >
           <IconWashDrycleanOff className="h-5 w-5 sm:w-6 sm:h-6 cursor-pointer mx-auto" />
           <span className="text-xs sm:text-sm text-center">clear</span>
         </div>
         <div
-          className="absolute right-2 sm:right-3 -top-5 sm:-top-14 flex items-center justify-center cursor-pointer sm:h-[55px] sm:w-[55px] sm:rounded-full sm:p-1 sm:bg-white/10 sm:hover:bg-white/20 shadow-lg text-gray-500 hover:text-gray-200"
+          className="absolute right-2 sm:right-3 -top-10 sm:-top-14 flex items-center justify-center cursor-pointer sm:h-[55px] sm:w-[55px] sm:rounded-full sm:p-1 sm:bg-white/10 sm:hover:bg-white/20 shadow-lg text-gray-500 hover:text-gray-200"
           onClick={copyTextareaToClipboard}
         >
           {!textareaCopied && (
