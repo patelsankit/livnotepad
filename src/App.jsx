@@ -23,6 +23,11 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const clearUI = () => {
+    const event = new CustomEvent("clearUI");
+    window.dispatchEvent(event);
+  };
+
   useEffect(() => {
     if (location.pathname === "/") {
       const randomPath = Math.random().toString(36).substring(2, 8);
@@ -32,6 +37,7 @@ function App() {
 
   const handleNewNote = () => {
     const newPath = Math.random().toString(36).substring(2, 8);
+    clearUI();
     navigate(`/${newPath}`);
   };
 
@@ -41,7 +47,7 @@ function App() {
         <Route path="/:noteId" element={<Notepad />} />
       </Routes>
       <AlertDialog>
-        <AlertDialogTrigger className="absolute  left-auto sm:left-4 lg:left-44 right-4 w-fit top-0.5 sm:top-7 lg:top-6 text-sm bg-white/20 hover:bg-white/30 px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-xl">
+        <AlertDialogTrigger className="absolute  left-auto sm:left-4 lg:left-36 z-20  right-4 w-fit top-14 sm:top-[57px] lg:top-6 text-sm bg-white/20 hover:bg-white/30 px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-xl">
           Create New Note
         </AlertDialogTrigger>
         <AlertDialogContent className="border-gray-500  w-[calc(100%-16px)] sm:w-full rounded-lg">
