@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from "./components/ui/tooltip";
 
-const Notepad = () => {
+const NotePad = () => {
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
   const [textareaCopied, setTextareaCopied] = useState(false);
@@ -183,4 +183,4 @@ const Notepad = () => {
   );
 };
 
-export default Notepad;
+export default NotePad;

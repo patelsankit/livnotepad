@@ -1,11 +1,11 @@
 import { useState } from "react";
 import "./App.css";
-import Notepad from "./Notepad";
+import NotePad from "./NotePad";
 
 function App() {
   return (
     <>
-      <Notepad />
+      <NotePad />
     </>
   );
 }
