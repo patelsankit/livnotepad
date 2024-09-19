@@ -6,7 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useEffect } from "react";
-import Notepad from "./Notepad";
+import Notepad from "./NotePad";
 import {
   AlertDialog,
   AlertDialogAction,
